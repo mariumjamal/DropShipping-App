@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} Inventory</title>
+    <link href="{{url_for('static', filename='styles/style.css')}}" rel="stylesheet"/>
+</head>
+<body>
+   <h1>Inventory</h1> 
+
+  <!-- Search input field and clear button -->
+  <div id="searchContainer">
+    <input type="text" id="searchInput" placeholder="Search products by name...">
+    <button id="clearSearch">Clear</button>
+</div>
+  
+  <!-- Result message will appear here -->
+  <div id="resultMessage"></div>
+
+   <!-- Add id="inventoryTable" to your table and wrap rows in <tbody> -->
+   <table id="inventoryTable">
+      <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for product in products %}
+        <tr>
+            <td>{{ product.Title }}</td>
+            <td>{{ product.Price }}</td>
+            <td>{{ product.QuantityAvailable }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+   </table>
+   
+   <form action="/inventory">
+        <input type="text" name="item" id="item" placeholder="Enter item name" />
+        <button type="submit">Submit</button>
+   </form>
+
+   <script>
+    // JavaScript for live search functionality
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('#inventoryTable tbody tr');
+        let resultMessage = document.getElementById('resultMessage');
+        let matches = 0;
+
+        rows.forEach(function(row) {
+            let name = row.querySelector('td:first-child').textContent.toLowerCase();
+            if (name.indexOf(filter) > -1) {
+                row.style.display = '';  // Show row if it matches the filter
+                matches++;  // Increase the match count
+                // Highlight matching text
+                let regex = new RegExp('(' + filter + ')', 'gi');
+                row.querySelector('td:first-child').innerHTML = row.querySelector('td:first-child').textContent.replace(regex, '<span class="highlight">$1</span>');
+            } else {
+                row.style.display = 'none';  // Hide row if it doesn't match
+            }
+        });
+
+        // Update the result message
+        if (matches > 0) {
+            resultMessage.innerHTML = `${matches} result(s) found`;
+        } else {
+            resultMessage.innerHTML = 'No results found';
+        }
+    });
+
+    // Clear search functionality
+    document.getElementById('clearSearch').addEventListener('click', function() {
+        document.getElementById('searchInput').value = '';  // Clear search input
+        let rows = document.querySelectorAll('#inventoryTable tbody tr');
+        rows.forEach(function(row) {
+            row.style.display = '';  // Reset all rows to visible
+            row.querySelector('td:first-child').innerHTML = row.querySelector('td:first-child').textContent;  // Reset highlighting
+        });
+        document.getElementById('resultMessage').innerHTML = '';  // Clear result message
+    });
+   </script>
+
+</body>
+</html>
