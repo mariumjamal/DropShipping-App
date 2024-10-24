@@ -1,3 +1,4 @@
+from flask import flash
 from dotenv import load_dotenv
 from pprint import pprint
 import requests
@@ -19,6 +20,11 @@ def get_current_inventory(item="Iphone"):
 if __name__ == "__main__":
     print('\n*** Get Current Inventory Details ***\n')
     item = input("\nPlease enter item name: ")
+    
+    #Check for invalid input
+    if not bool (item.strip()):
+        print("Invalid input! Please enter a valid input.")
+
     inventory_response = get_current_inventory(item)
     print("\n")
     pprint(inventory_response)

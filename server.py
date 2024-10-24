@@ -27,7 +27,8 @@ def get_inventory():
         print(f"Product: {itemTitle}, Quantity: {itemQuantity}, Price: {itemPrice}")
 
         # Add the extracted information to the list
-        extracted_data.append({
+        if itemQuantity > 0 :
+            extracted_data.append({
             "Title": itemTitle,
             "QuantityAvailable": itemQuantity,
             "Price": itemPrice,
